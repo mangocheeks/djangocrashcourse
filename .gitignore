@@ -2,4 +2,4 @@
 .venv/
 
 #ignore pycaches
-project/project/__pycache__/
+__pycache__/
