@@ -1,3 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
+#add room model from models.py
+from .models import Room, Topic, Message
+
+# make viewable from admin panel
+admin.site.register(Room)
+admin.site.register(Topic)
+admin.site.register(Message)

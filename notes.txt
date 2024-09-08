@@ -5,6 +5,16 @@ python manage.py runserver
 
 python manage.py startapp base
 
+python manage.py migrate
+builds out db sql tables for apps, executes pending migrations
+
+python manage.py makemigrations
+
+python manage.py createsuperuser
+
+lillian
+lchen45@uncc.edu
+9410925
 
 when adding template folders to an app folder, add folder inside templates that matches app name
 - htmls moved inside nested base, 
