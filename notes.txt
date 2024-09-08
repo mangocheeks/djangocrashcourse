@@ -1,1 +1,13 @@
+using python 3.10 and django 5.1.1
+
+run from inside the project folder
 python manage.py runserver
+
+python manage.py startapp base
+
+
+when adding template folders to an app folder, add folder inside templates that matches app name
+- htmls moved inside nested base, 
+- templates moved inside templates, no need to leave inside root template 
+discontinuities with path for python 3.10, django ver something
+

@@ -54,10 +54,17 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'project.urls'
 
+#check root dir
+#print("\nBASE DIRECTORY: "+str(BASE_DIR)+"\n")
+#C:\Users\Lillian\djangocrashcourse\projects
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            #set connection to templates file relative to root dir
+            BASE_DIR/'templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

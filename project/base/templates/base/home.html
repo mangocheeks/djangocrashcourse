@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<h1>home html</h1>
+
+<div>
+
+<div>
+    {% for room in rooms%}
+        <div>
+            <!-- variables are passed w/2 curly praces -->
+            <!-- made accessible from rooms variable being passed into http response -->
+            
+            <!-- use url instead of hard coded location -->
+            <a href="{% url 'room' room.id %}">
+            <!-- <a href="/room/{{room.id}}"> -->
+                <h5>{{room.id}} -- {{room.name}}</h5>
+
+            </a>
+            
+        </div>
+    {% endfor %}
+</div>
+
+</div>
+
+
+{% endblock content %}
