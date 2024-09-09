@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Room
+from .models import Room, Topic
 from .forms import RoomForm
+from django.db.models import Q
 # Create your views here.
 # what's called when a url is visited
 
@@ -12,11 +13,24 @@ from .forms import RoomForm
 #     {'id': 3, 'name': 'Front end'},
 # ]
 def home(request):
-    # get all rooms in room database, overwrites predfined room dictionary
-    rooms = Room.objects.all()
+    # get all rooms in room database, overwrites predfined room dictionary using all()
+
+    # shows all rooms when no q is set
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+
+    rooms = Room.objects.filter(
+        # double underscore
+        Q(topic__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q)
+        )
+    # filters case insensitive as long as q contains chars of topic
+
+    topics = Topic.objects.all()
+    room_count = rooms.count()
     # instead of passing through request, rooms can also be accesssed through context dictionairy
     # context = {'rooms': rooms}
-    return render(request, 'base/home.html', {'rooms':rooms})
+    return render(request, 'base/home.html', {'rooms':rooms, 'topics':topics, 'room_count': room_count})
     #return HttpResponse('HomePage')
 
 # gets pk variable from urls.py

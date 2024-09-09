@@ -2,35 +2,61 @@
 
 
 {% block content %}
+
+<style>
+    .home-container{
+        display:grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
+</style>
+
 <h1>home html</h1>
 
-<div>
+<div class="home-container">
 
-<div>
+    <div>
+        <h3>Browse Topics</h3>
+        <hr>
 
-    <a href="{% url 'create-room' %}">Create Room</a>
-    {% for room in rooms%}
         <div>
-            <a href="{% url 'update-room' room.id %}">Edit</a>
-            <a href="{% url 'delete-room' room.id %}">Delete</a>
-            <span>@{{room.host.username}}</span>
-
-            <!-- variables are passed w/2 curly praces -->
-            <!-- made accessible from rooms variable being passed into http response -->
-            
-            <!-- use url instead of hard coded location -->
-            <a href="{% url 'room' room.id %}">
-                <!-- when debugging, check html tags -->
-            <!-- <a href="/room/{{room.id}}"> -->
-                <h5>{{room.id}} -- {{room.name}}</h5>
-
-            </a>
-            <small>{{room.topic.name}}</small>
-            <hr>
+            <!-- q for query -->
+            <a href="{% url 'home' %}">All</a>
         </div>
-    {% endfor %}
-</div>
 
+        {% for topic in topics %}
+
+        <div>
+            <!-- q for query -->
+            <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <h5>{{room_count}} rooms available</h5>
+        <a href="{% url 'create-room' %}">Create Room</a>
+        {% for room in rooms%}
+            <div>
+                <a href="{% url 'update-room' room.id %}">Edit</a>
+                <a href="{% url 'delete-room' room.id %}">Delete</a>
+                <span>@{{room.host.username}}</span>
+
+                <!-- variables are passed w/2 curly praces -->
+                <!-- made accessible from rooms variable being passed into http response -->
+                
+                <!-- use url instead of hard coded location -->
+                <a href="{% url 'room' room.id %}">
+                    <!-- when debugging, check html tags -->
+                    <!-- <a href="/room/{{room.id}}"> -->
+                    <h5>{{room.id}} -- {{room.name}}</h5>
+                </a>
+
+                <small>{{room.topic.name}}</small>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
 
