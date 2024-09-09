@@ -4,6 +4,7 @@ from . import views
 
 
 urlpatterns =[
+    path('login/', views.loginPage, name='login'),
     #when someone goes to home page (empty url) , trigger home function from views.py to return an http reponse
     path('', views.home, name="home"),
     path('room/<str:pk>/', views.room, name="room"),

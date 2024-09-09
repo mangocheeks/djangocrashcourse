@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponse
 from .models import Room, Topic
 from .forms import RoomForm
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 # Create your views here.
 # what's called when a url is visited
@@ -12,6 +15,29 @@ from django.db.models import Q
 #     {'id': 2, 'name': 'Design room'},
 #     {'id': 3, 'name': 'Front end'},
 # ]
+
+
+def loginPage(request):
+    # attempting login
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, "User does not exist")
+
+        user = authenticate (request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Username or password incorrect")
+    context = {}
+    return render(request, 'base/login_register.html', context)
+
 def home(request):
     # get all rooms in room database, overwrites predfined room dictionary using all()
 
