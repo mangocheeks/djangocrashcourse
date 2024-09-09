@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+
+<div>
+    <form method="P OST" action="">
+    <!-- protect from forgery, malicious input, etc. -->
+        {% csrf_token %}
+        {{form.as_p}}
+    <!-- wraps p tag around inputs, creates blockline elements -->
+        <input type="submit" value="Submit"/>
+    </form>
+    <!-- CHECK YOUR TAGS -->
+</div>
+
+{% endblock content %}

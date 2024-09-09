@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # attribute = column
 # new row = new instance
 
-#when models are added to a db, make a migration and migrate scripts
+#when models are added to a db, make a migration, migrate scripts, register in admin panel
 
 # might need to string wrap classes if referenced after
 
@@ -39,9 +39,12 @@ class Room(models.Model):
     #first time db is saved
     created = models.DateTimeField(auto_now_add=True)
 
+    # subclass room determines order
+    class Meta:
+       ordering = ['-updated', '-created']
+
     def __str__(self):
         return self.name
-    
     
 
 class Message(models.Model):

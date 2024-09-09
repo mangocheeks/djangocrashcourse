@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Room
+from .forms import RoomForm
 # Create your views here.
 # what's called when a url is visited
 
@@ -31,3 +32,45 @@ def room(request, pk):
     context = {'room': room}
     #pass room dictionary item into context to be accessible in room.html
     return render(request, 'base/room.html', context)
+
+
+def createRoom(request):
+    form = RoomForm()
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'base/room_form.html', context)
+
+
+def updateRoom(request, pk):
+    room = Room.objects.get(id=pk)
+    # roomform gets prefilled with room value
+    form = RoomForm(instance=room)
+
+    context = {'form': form}
+
+    if request.method == 'POST':
+        # update existing room instead of creating new room
+        form = RoomForm(request.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    
+    # check for random syntax errors and auto completes, use large screen
+    return render(request, 'base/room_form.html', context)
+
+def deleteRoom(request, pk):
+    room = Room.objects.get(id=pk)
+
+# if delete is pressed
+    if request.method == 'POST':
+        room.delete()
+        return redirect('home')
+    
+    context = {'obj': room}
+    return render(request, 'base/delete.html', context)

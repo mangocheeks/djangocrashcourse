@@ -7,9 +7,12 @@
 <div>
 
 <div>
+
+    <a href="{% url 'create-room' %}">Create Room</a>
     {% for room in rooms%}
         <div>
-
+            <a href="{% url 'update-room' room.id %}">Edit</a>
+            <a href="{% url 'delete-room' room.id %}">Delete</a>
             <span>@{{room.host.username}}</span>
 
             <!-- variables are passed w/2 curly praces -->
