@@ -6,6 +6,7 @@ from .forms import RoomForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 # what's called when a url is visited
 
@@ -18,6 +19,11 @@ from django.db.models import Q
 
 
 def loginPage(request):
+
+    if request.user.is_authenticated:
+        return redirect('home')
+        # attempts to relogin by manually changing url are redirected to home
+
     # attempting login
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -81,7 +87,8 @@ def room(request, pk):
     #pass room dictionary item into context to be accessible in room.html
     return render(request, 'base/room.html', context)
 
-
+# user must be logged in to create room, else redirected
+@login_required(login_url='login')
 def createRoom(request):
     form = RoomForm()
 
@@ -94,11 +101,15 @@ def createRoom(request):
     context = {'form': form}
     return render(request, 'base/room_form.html', context)
 
-
+@login_required(login_url='login')
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     # roomform gets prefilled with room value
     form = RoomForm(instance=room)
+
+    if request.user != room.host:
+        # only allow room editing by host of room
+        return HttpResponse('You are not allowed here')
 
     context = {'form': form}
 
@@ -112,8 +123,13 @@ def updateRoom(request, pk):
     # check for random syntax errors and auto completes, use large screen
     return render(request, 'base/room_form.html', context)
 
+@login_required(login_url='login')
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
+
+    if request.user != room.host:
+        # only allow room editing by host of room
+        return HttpResponse('You are not allowed here')
 
 # if delete is pressed
     if request.method == 'POST':

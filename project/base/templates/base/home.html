@@ -38,8 +38,12 @@
         <a href="{% url 'create-room' %}">Create Room</a>
         {% for room in rooms%}
             <div>
+                {% if request.user == room.host %}
+                
                 <a href="{% url 'update-room' room.id %}">Edit</a>
                 <a href="{% url 'delete-room' room.id %}">Delete</a>
+
+                {% endif %}
                 <span>@{{room.host.username}}</span>
 
                 <!-- variables are passed w/2 curly praces -->
