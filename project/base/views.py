@@ -35,8 +35,16 @@ def loginPage(request):
             return redirect('home')
         else:
             messages.error(request, "Username or password incorrect")
+            
     context = {}
     return render(request, 'base/login_register.html', context)
+
+def logoutUser(request):
+    # deletes session token to logout user
+    logout(request)
+    return redirect('home')
+
+
 
 def home(request):
     # get all rooms in room database, overwrites predfined room dictionary using all()
