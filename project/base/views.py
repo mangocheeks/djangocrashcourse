@@ -83,12 +83,13 @@ def home(request):
         Q(description__icontains=q)
         )
     # filters case insensitive as long as q contains chars of topic
-
+    room_messages = Message.objects.filter(Q(room__name__icontains=q))
     topics = Topic.objects.all()
     room_count = rooms.count()
     # instead of passing through request, rooms can also be accesssed through context dictionairy
-    # context = {'rooms': rooms}
-    return render(request, 'base/home.html', {'rooms':rooms, 'topics':topics, 'room_count': room_count})
+    context = {'rooms':rooms, 'topics':topics, 'room_count': room_count, 'room_messages': room_messages}
+
+    return render(request, 'base/home.html', context)
     #return HttpResponse('HomePage')
 
 # gets pk variable from urls.py
@@ -100,7 +101,7 @@ def room(request, pk):
     room = Room.objects.get(id=pk)
     participants = room.participants.all()
         # all for many to many
-    room_messages = room.message_set.all().order_by('-created')
+    room_messages = room.message_set.all()
         # set all for many to one
     # get set of message models related to room
 
@@ -123,6 +124,14 @@ def room(request, pk):
     context = {'room': room, 'room_messages': room_messages, 'participants': participants}
     #pass room dictionary item into context to be accessible in room.html
     return render(request, 'base/room.html', context)
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    rooms = user.room_set.all()
+    room_messages = user.message_set.all()
+    topics = Topic.objects.all()
+    context= {'user': user, 'rooms': rooms, 'room_messages': room_messages, 'topics': topics}
+    return render(request, 'base/profile.html', context)
 
 
 # user must be logged in to create room, else redirected

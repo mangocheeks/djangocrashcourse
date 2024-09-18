@@ -1,0 +1,25 @@
+{% for room in rooms%}
+            <div>
+                {% if request.user == room.host %}
+                <!-- Room info -->
+                <a href="{% url 'update-room' room.id %}">Edit</a>
+                <a href="{% url 'delete-room' room.id %}">Delete</a>
+
+                {% endif %}
+                
+                <a href="{% url 'user-profile' room.host.id %}">@{{room.host.username}}</a>
+
+                <!-- variables are passed w/2 curly praces -->
+                <!-- made accessible from rooms variable being passed into http response -->
+                
+                <!-- use url instead of hard coded location -->
+                <a href="{% url 'room' room.id %}">
+                    <!-- when debugging, check html tags -->
+                    <!-- <a href="/room/{{room.id}}"> -->
+                    <h5>{{room.id}} -- {{room.name}}</h5>
+                </a>
+
+                <small>{{room.topic.name}}</small>
+                <hr>
+            </div>
+        {% endfor %}

@@ -59,6 +59,10 @@ class Message(models.Model):
     #first time db is saved
     created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+       ordering = ['-updated', '-created']
+    # this model is always ordered
+
     def __str__(self):
         return self.body[0:50]
         # print first 50 chars
