@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+<!-- load static file -->
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/main.css' %}">
     <title>project</title>
     <!-- inheritance allows other pages to use wrapped content -->
 </head>
@@ -13,10 +16,12 @@
     {% if messages %}
     <ul class = "messages">
         {% for message in messages %}
-            {{message}}
+            <li>{{message}}</li>
         {% endfor %}
     </ul>
     {% endif %}
+
+    <img src="{% static 'images/panda.jpg' %}" alt="panda">
 
     {% block content %}
 

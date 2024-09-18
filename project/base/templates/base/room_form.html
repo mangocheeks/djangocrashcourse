@@ -4,7 +4,7 @@
 {% block content %}
 
 <div>
-    <form method="P OST" action="">
+    <form method="POST" action="">
     <!-- protect from forgery, malicious input, etc. -->
         {% csrf_token %}
         {{form.as_p}}
