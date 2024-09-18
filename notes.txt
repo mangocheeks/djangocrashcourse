@@ -16,6 +16,8 @@ lillian
 lchen45@uncc.edu
 9410925
 
+always check for coding and syntax errors in html
+
 when adding template folders to an app folder, add folder inside templates that matches app name
 - htmls moved inside nested base, 
 - templates moved inside templates, no need to leave inside root template 

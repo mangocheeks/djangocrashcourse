@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -97,13 +97,33 @@ def room(request, pk):
     # for i in rooms:
     #     if i['id'] == int(pk):
     #         room = i
-
     room = Room.objects.get(id=pk)
+    participants = room.participants.all()
+        # all for many to many
+    room_messages = room.message_set.all().order_by('-created')
+        # set all for many to one
+    # get set of message models related to room
+
+    # comment submitted:
+    if request.method == 'POST':
+        
+        message = Message.objects.create(
+            # creates instance of message model
+            user=request.user,
+            room=room,
+            # note that it gets body because text was named body in the room.html
+            body = request.POST.get('body')
+        )
+        room.participants.add(request.user)
+        return redirect('room', pk=room.id)
+
+
     # context is a dictionary that assigns params to pass in
     # first item is in quotations
-    context = {'room': room}
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
     #pass room dictionary item into context to be accessible in room.html
     return render(request, 'base/room.html', context)
+
 
 # user must be logged in to create room, else redirected
 @login_required(login_url='login')
@@ -155,4 +175,21 @@ def deleteRoom(request, pk):
         return redirect('home')
     
     context = {'obj': room}
+    return render(request, 'base/delete.html', context)
+
+
+@login_required(login_url='login')
+def deleteMessage(request, pk):
+    message = Message.objects.get(id=pk)
+
+    if request.user != message.user:
+        # only allow room editing by message poster
+        return HttpResponse('You are not allowed here')
+
+# if delete is pressed
+    if request.method == 'POST':
+        message.delete()
+        return redirect('home')
+    
+    context = {'obj': message}
     return render(request, 'base/delete.html', context)
