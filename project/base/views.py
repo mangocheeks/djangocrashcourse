@@ -138,17 +138,22 @@ def userProfile(request, pk):
 @login_required(login_url='login')
 def createRoom(request):
     form = RoomForm()
-
+    topics = Topic.objects.all()
     if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            # create room instance
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        # gets or creates object if not found
+        
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description')
+        )
+        
+        return redirect('home')
 
-    context = {'form': form}
+    context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
 
 @login_required(login_url='login')
@@ -156,20 +161,24 @@ def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     # roomform gets prefilled with room value
     form = RoomForm(instance=room)
-
+    topics = Topic.objects.all()
     if request.user != room.host:
         # only allow room editing by host of room
         return HttpResponse('You are not allowed here')
 
-    context = {'form': form}
+    context = {'form': form, 'topics': topics, 'room':room}
 
     if request.method == 'POST':
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+
+        room.name=request.POST.get('name')
+        room.topic=topic
+        room.description=request.POST.get('description')
         # update existing room instead of creating new room
-        form = RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    
+        room.save()
+        return redirect('home')
+
     # check for random syntax errors and auto completes, use large screen
     return render(request, 'base/room_form.html', context)
 
