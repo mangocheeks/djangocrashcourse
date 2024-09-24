@@ -84,7 +84,8 @@ def home(request):
         )
     # filters case insensitive as long as q contains chars of topic
     room_messages = Message.objects.filter(Q(room__name__icontains=q))
-    topics = Topic.objects.all()
+    topics = Topic.objects.all()[0:5] 
+    # see only top 5 topics
     room_count = rooms.count()
     # instead of passing through request, rooms can also be accesssed through context dictionairy
     context = {'rooms':rooms, 'topics':topics, 'room_count': room_count, 'room_messages': room_messages}
@@ -229,3 +230,13 @@ def updateUser(request):
             return redirect('user-profile', pk=user.id)
 
     return render(request, 'base/update-user.html', context)
+
+
+def topicsPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    return render(request, 'base/topics.html', {'topics': topics})
+
+def activityPage(request):
+    room_messages = Message.objects.all()
+    return render(request, 'base/activity.html', {'room_messages': room_messages})
