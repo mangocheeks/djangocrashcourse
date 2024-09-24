@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #every url w/ empty string should be routed to url file in base app
     path('', include('base.urls')),
+    path('api/', include('base.api.urls'))
 ]
