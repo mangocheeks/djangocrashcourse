@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'base.apps.BaseConfig',
 ]
 
+# custom auth model
+AUTH_USER_MODEL = 'base.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -139,6 +142,11 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+
+# where to put user uploaded content
+MEDIA_URL = '/images/'
+MEDIA_ROOT= BASE_DIR / 'static/images'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

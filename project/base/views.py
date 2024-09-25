@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .models import Room, Topic, Message
-from .forms import RoomForm, UserForm
-from django.contrib.auth.models import User
+from .models import Room, Topic, Message, User
+from .forms import RoomForm, UserForm, MyUserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+
 # Create your views here.
 # what's called when a url is visited
 
@@ -27,15 +26,17 @@ def loginPage(request):
 
     # attempting login
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        # username = request.POST.get('username').lower()
+        email = request.POST.get('email')
         password = request.POST.get('password').lower()
 
         try:
-            user = User.objects.get(username=username)
+            # switched to email
+            user = User.objects.get(email=email)
         except:
             messages.error(request, "User does not exist")
 
-        user = authenticate (request, username=username, password=password)
+        user = authenticate (request, email=email, password=password)
 
         if user is not None:
             login(request, user)
@@ -53,10 +54,10 @@ def logoutUser(request):
 
 def registerPage(request):
     
-    form = UserCreationForm()
+    form = MyUserCreationForm()
 
     if request.method=='POST':
-        form = UserCreationForm(request.POST)
+        form = MyUserCreationForm(request.POST)
         # capture info from form on submit 
         if form.is_valid():
             user = form.save(commit = False)
@@ -133,7 +134,6 @@ def userProfile(request, pk):
     topics = Topic.objects.all()
     context= {'user': user, 'rooms': rooms, 'room_messages': room_messages, 'topics': topics}
     return render(request, 'base/profile.html', context)
-
 
 # user must be logged in to create room, else redirected
 @login_required(login_url='login')
@@ -224,7 +224,8 @@ def updateUser(request):
     context= {'form': form}
 
     if request.method == 'POST':
-        form = UserForm(request.POST, instance = user)
+        # request.FILES passes pfp submission
+        form = UserForm(request.POST, request.FILES, instance = user)
         if form.is_valid():
             form.save()
             return redirect('user-profile', pk=user.id)
